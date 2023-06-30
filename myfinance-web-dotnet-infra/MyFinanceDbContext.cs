@@ -10,7 +10,7 @@ public class MyFinanceDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseSqlServer(@"Server=localhost,1433;Database=myfinance;Trusted_Connection=True;");
+        optionsBuilder.UseSqlServer(@"Server=localhost,1433;Database=myfinance;User=sa;Password=Odr@nreb123;Encrypt=False;TrustServerCertificate=False");
     }
 
 }
