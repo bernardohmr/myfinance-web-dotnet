@@ -1,4 +1,4 @@
-using myfinance_web_dotnet_domain.Entities;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace myfinance_web_dotnet.Models
 {
@@ -10,7 +10,7 @@ namespace myfinance_web_dotnet.Models
         public DateTime Data { get; set; }
         public decimal Valor { get; set; }
         public int PlanoContaId { get; set; }
-        public PlanoConta PlanoConta { get; set; }
+        public IEnumerable<SelectListItem>? ListaPlanoContas { get; set; }
         public string? Tipo { get; set; }
     }
 }

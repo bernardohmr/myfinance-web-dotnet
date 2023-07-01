@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using myfinance_web_dotnet.Models;
 using myfinance_web_dotnet_domain.Entities;
 using myfinance_web_dotnet_service.Interfaces;
@@ -10,11 +11,14 @@ public class TransacaoController : Controller
 {
     private readonly ILogger<HomeController> _logger;
     private readonly ITransacaoService _transacaoService;
+    private readonly IPlanoContaService _planoContaService;
 
-    public TransacaoController(ILogger<HomeController> logger, ITransacaoService transacaoService)
+    public TransacaoController(ILogger<HomeController> logger, ITransacaoService transacaoService, IPlanoContaService planoContaService)
     {
         _logger = logger;
         _transacaoService = transacaoService;
+        _transacaoService = transacaoService;
+        _planoContaService = planoContaService;
     }
 
     public IActionResult Index()
@@ -47,24 +51,26 @@ public class TransacaoController : Controller
 
     public IActionResult Cadastrar(int? Id)
     {
+        var listaPlanoContas = new SelectList(_planoContaService.ListarRegistros(), "Id", "Descricao");
+
+        var transacao = new TransacaoModel()
+        {
+            Data = DateTime.Now,
+            ListaPlanoContas = listaPlanoContas,
+        };
+
         if (Id != null)
         {
-            var transacao = _transacaoService.RetornarRegistro((int)Id);
-            var transacaoModel = new TransacaoModel()
-            {
-                Id = transacao.Id,
-                Historico = transacao.Historico,
-                Data = transacao.Data,
-                Valor = transacao.Valor,
-                PlanoContaId = transacao.PlanoContaId,
-            };
+            var transacaoStored = _transacaoService.RetornarRegistro((int)Id);
 
-            return View(transacaoModel);
+            transacao.Id = transacaoStored.Id;
+            transacao.Historico = transacaoStored.Historico;
+            transacao.Data = transacaoStored.Data;
+            transacao.Valor = transacaoStored.Valor;
+            transacao.PlanoContaId = transacaoStored.PlanoContaId;
         }
-        else
-        {
-            return View();
-        }
+
+        return View(transacao);
     }
 
     [HttpPost]
